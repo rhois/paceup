@@ -1,0 +1,72 @@
+name: Web (GitHub Pages)
+
+# Membangun versi web dan menerbitkannya ke GitHub Pages.
+#
+# Ini cara paling cepat mencoba aplikasi di ponsel TANPA memasang apa pun:
+# buka tautan Pages di browser ponsel, lalu login dengan akun demo.
+#
+# PENTING: GitHub Pages pada repositori PRIVAT memerlukan paket GitHub Pro.
+# Untuk repo privat, job `deploy` akan gagal — job `build` tetap berjalan
+# dan artifact-nya bisa diunduh. Agar Pages aktif, ubah visibilitas repo
+# menjadi publik:  Settings -> General -> Danger Zone -> Change visibility.
+#
+# GPS di browser hanya bekerja pada HTTPS (Pages sudah HTTPS), dan browser
+# meminta izin lokasi saat tombol MULAI LARI ditekan.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/**'
+      - 'web/**'
+      - 'pubspec.yaml'
+      - '.github/workflows/web.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Ambil dependensi
+        run: flutter pub get
+
+      - name: Build web
+        run: |
+          flutter build web --release \
+            --base-href "/${{ github.event.repository.name }}/" \
+            --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    name: Terbitkan ke Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
