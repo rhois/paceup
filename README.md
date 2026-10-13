@@ -2,6 +2,9 @@
 
 **Level up every run.**
 
+[![Android APK](https://github.com/rois-etalas/paceup/actions/workflows/android.yml/badge.svg)](https://github.com/rois-etalas/paceup/actions/workflows/android.yml)
+[![Web](https://github.com/rois-etalas/paceup/actions/workflows/web.yml/badge.svg)](https://github.com/rois-etalas/paceup/actions/workflows/web.yml)
+
 Aplikasi pelacak lari & aktivitas outdoor bergaya Strava, dibangun dengan **Flutter** + **PostgreSQL/Supabase**.
 
 Rekam lari, hitung jarak, pace, split, elevasi, dan kalori secara real time — lalu bagikan ke feed sosial, kumpulkan kudos, dan bersaing di leaderboard.
@@ -63,6 +66,33 @@ Tagline: **"Level up every run."** — menjual progres, bukan sekadar pencatatan
 
 ---
 
+## Coba tanpa memasang apa pun
+
+### Di browser ponsel
+Buka **https://rois-etalas.github.io/paceup/** lalu login dengan `demo@paceup.app` / `paceup123`.
+
+GPS di browser bekerja lewat HTTPS (Pages sudah HTTPS) dan izin lokasi diminta saat menekan MULAI LARI.
+
+### Pasang APK Android
+APK dibangun otomatis di GitHub Actions, jadi tidak perlu memasang Android SDK di komputer:
+
+1. Buka tab **Actions** → workflow **Android APK** → run terbaru.
+2. Unduh artifact **`paceup-apk`** (berisi satu berkas `.apk`).
+3. Kirim APK ke ponsel (kabel, Google Drive, atau `adb install`).
+4. Di ponsel, aktifkan **"Install dari sumber tidak dikenal"** untuk aplikasi pengirim berkas, lalu buka APK-nya.
+
+Atau lewat terminal:
+
+```bash
+# Unduh lewat GitHub CLI
+gh run download -R rois-etalas/paceup -n paceup-apk
+
+# Pasang langsung ke ponsel yang tersambung USB
+adb install paceup-*.apk
+```
+
+> APK ini ditandatangani dengan **debug key**, cocok untuk pengujian pribadi — bukan untuk Play Store. Untuk rilis nyata, tambahkan keystore lewat GitHub Secrets.
+
 ## Menjalankan
 
 ### 1. Prasyarat
@@ -101,6 +131,15 @@ flutter run \
 ```
 
 Wire-up-nya otomatis: kunci ada → pakai Supabase; kosong → mode demo.
+
+Untuk CI, simpan kredensial sebagai repository secrets (**Settings → Secrets and variables → Actions**):
+
+| Secret | Isi |
+|---|---|
+| `SUPABASE_URL` | URL proyek Supabase |
+| `SUPABASE_ANON_KEY` | Anon/publishable key |
+
+Bila kedua secret kosong, APK & web yang dibangun otomatis memakai mode demo.
 
 ---
 

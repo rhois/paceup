@@ -42,3 +42,17 @@ db-seed: ## Isi data contoh (EMAIL=kamu@contoh.com)
 	psql "$(DATABASE_URL)" -v ON_ERROR_STOP=1 -v email="$(EMAIL)" -f sql/seed.sql
 
 db-all: db-schema db-rls db-functions ## Skema + RLS + fungsi
+
+# --- APK dari GitHub Actions (tanpa perlu Android SDK lokal) ---
+apk: ## Unduh APK terbaru dari GitHub Actions
+	@rm -rf /tmp/paceup-apk && mkdir -p /tmp/paceup-apk
+	gh run download -R rois-etalas/paceup -n paceup-apk -D /tmp/paceup-apk
+	@find /tmp/paceup-apk -name '*.apk' -exec cp {} ./paceup-latest.apk \;
+	@echo "APK tersimpan: paceup-latest.apk"
+	@ls -lh paceup-latest.apk
+
+install-apk: apk ## Pasang APK ke ponsel yang tersambung USB
+	adb install -r paceup-latest.apk
+
+ci: ## Lihat status workflow terakhir
+	gh run list -R rois-etalas/paceup --limit 5
