@@ -36,6 +36,8 @@ jobs:
   build:
     name: Build web
     runs-on: ubuntu-latest
+    outputs:
+      pages_ready: ${{ steps.pages.outcome == 'success' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -54,15 +56,44 @@ jobs:
             --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
             --dart-define=SUPABASE_PUBLISHABLE_KEY=${{ secrets.SUPABASE_PUBLISHABLE_KEY || secrets.SUPABASE_ANON_KEY }}
 
-      - uses: actions/configure-pages@v5
+      # Coba aktifkan Pages otomatis. Bila gagal (butuh hak admin),
+      # jangan hentikan job: artifact web tetap diunggah di bawah.
+      - name: Konfigurasi Pages
+        id: pages
+        continue-on-error: true
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Unggah artifact web (selalu tersedia)
+        uses: actions/upload-artifact@v4
+        with:
+          name: paceup-web
+          path: build/web
+          retention-days: 30
+
+      - name: Unggah artifact Pages
+        if: steps.pages.outcome == 'success'
+        uses: actions/upload-pages-artifact@v3
         with:
           path: build/web
+
+      - name: Catatan bila Pages belum aktif
+        if: steps.pages.outcome != 'success'
+        run: |
+          echo "### Pages belum aktif ℹ️" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Versi web tetap diunggah sebagai artifact **paceup-web**." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Untuk menerbitkan ke GitHub Pages, aktifkan sekali di:" >> $GITHUB_STEP_SUMMARY
+          echo "**Settings -> Pages -> Source: GitHub Actions**, lalu jalankan" >> $GITHUB_STEP_SUMMARY
+          echo "workflow ini lagi." >> $GITHUB_STEP_SUMMARY
 
   deploy:
     name: Terbitkan ke Pages
     needs: build
+    # Dijalankan hanya bila Pages berhasil dikonfigurasi.
+    if: needs.build.outputs.pages_ready == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

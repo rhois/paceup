@@ -84,11 +84,15 @@ jobs:
           cp build/app/outputs/flutter-apk/app-release.apk \
              dist/paceup-${{ github.sha }}.apk
 
+      # always(): artefak tetap terunggah walau langkah sebelumnya gagal,
+      # sehingga APK yang sudah terbentuk tidak hilang.
       - name: Unggah artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: paceup-apk
           path: dist/*.apk
+          if-no-files-found: warn
           retention-days: 30
 
       - name: Ringkasan
