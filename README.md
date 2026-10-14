@@ -2,8 +2,8 @@
 
 **Level up every run.**
 
-[![Android APK](https://github.com/rois-etalas/paceup/actions/workflows/android.yml/badge.svg)](https://github.com/rois-etalas/paceup/actions/workflows/android.yml)
-[![Web](https://github.com/rois-etalas/paceup/actions/workflows/web.yml/badge.svg)](https://github.com/rois-etalas/paceup/actions/workflows/web.yml)
+[![Android APK](https://github.com/rhois/paceup/actions/workflows/android.yml/badge.svg)](https://github.com/rhois/paceup/actions/workflows/android.yml)
+[![Web](https://github.com/rhois/paceup/actions/workflows/web.yml/badge.svg)](https://github.com/rhois/paceup/actions/workflows/web.yml)
 
 Aplikasi pelacak lari & aktivitas outdoor bergaya Strava, dibangun dengan **Flutter** + **PostgreSQL/Supabase**.
 
@@ -69,7 +69,7 @@ Tagline: **"Level up every run."** — menjual progres, bukan sekadar pencatatan
 ## Coba tanpa memasang apa pun
 
 ### Di browser ponsel
-Buka **https://rois-etalas.github.io/paceup/** lalu login dengan `demo@paceup.app` / `paceup123`.
+Buka **https://rhois.github.io/paceup/** lalu login dengan `demo@paceup.app` / `paceup123`.
 
 GPS di browser bekerja lewat HTTPS (Pages sudah HTTPS) dan izin lokasi diminta saat menekan MULAI LARI.
 
@@ -85,7 +85,7 @@ Atau lewat terminal:
 
 ```bash
 # Unduh lewat GitHub CLI
-gh run download -R rois-etalas/paceup -n paceup-apk
+gh run download -R rhois/paceup -n paceup-apk
 
 # Pasang langsung ke ponsel yang tersambung USB
 adb install paceup-*.apk
