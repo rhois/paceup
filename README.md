@@ -127,7 +127,7 @@ Mode demo menyemai otomatis: 4 pelari, 14 aktivitas dengan rute & elevasi, kudos
 ```bash
 flutter run \
   --dart-define=SUPABASE_URL=https://xxxx.supabase.co \
-  --dart-define=SUPABASE_ANON_KEY=eyJhbGciOi...
+  --dart-define=SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 ```
 
 Wire-up-nya otomatis: kunci ada → pakai Supabase; kosong → mode demo.
@@ -137,7 +137,10 @@ Untuk CI, simpan kredensial sebagai repository secrets (**Settings → Secrets a
 | Secret | Isi |
 |---|---|
 | `SUPABASE_URL` | URL proyek Supabase |
-| `SUPABASE_ANON_KEY` | Anon/publishable key |
+| `SUPABASE_PUBLISHABLE_KEY` | Publishable key (istilah baru Supabase) |
+| `SUPABASE_ANON_KEY` | Anon key (istilah lama) — dipakai bila publishable key kosong |
+
+`SUPABASE_ANON_KEY` adalah istilah lama Supabase; keduanya diterima agar proyek yang sudah ada tetap jalan.
 
 Bila kedua secret kosong, APK & web yang dibangun otomatis memakai mode demo.
 

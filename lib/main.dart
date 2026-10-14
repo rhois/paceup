@@ -25,7 +25,7 @@ Future<void> main() async {
   if (AppEnv.hasSupabase) {
     await sb.Supabase.initialize(
       url: AppEnv.supabaseUrl,
-      publishableKey: AppEnv.supabaseAnonKey,
+      publishableKey: AppEnv.supabaseKey,
     );
     repository = SupabaseRepository(sb.Supabase.instance.client);
   } else {
